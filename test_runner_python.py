@@ -1,8 +1,8 @@
 import os
 import sys
 
-def run(runs, step=1):
-    for x in xrange(2, runs, step):
+def run(runs, start=10, step=1):
+    for x in xrange(start, runs, step):
         run_command(x)
 
 def run_command(x):
@@ -19,4 +19,4 @@ if "__main__" == __name__:
         run_command(1)
     else:
         run_command(1)
-        run(int(sys.argv[1]),step=int(sys.argv[2]))
+        run(int(sys.argv[1]),start=int(sys.argv[2]),step=int(sys.argv[3]))
