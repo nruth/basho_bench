@@ -4,16 +4,20 @@
 -include("basho_bench.hrl").
 
 new(_Id) ->
-    case net_adm:ping('master@127.0.0.1') of
+    case net_adm:ping('gaoler@lakka-1.it.kth.se') of
         pong ->
-            io:format("connected~n", []);
+            ok;
         Error ->
             io:format("error connecting: ~p ~n", [erlang:get_cookie()])
     end,
     {ok, undefined}.
 
-run(request, KeyGen, _ValueGen, State) ->
-    Name = list_to_atom(KeyGen()),
-    {resource, beer, {Name, _}} = 
-        rpc:call('master@127.0.0.1', gaoler, request, [beer, Name]),
+run(request, _KeyGen, _ValueGen, State) ->    
+    MasterHost = 'gaoler@lakka-1.it.kth.se',
+    Client = self(),
+    rpc:call(MasterHost, centralised_lock, acquire, [Client]),
+    receive
+        lock ->
+            rpc:call(MasterHost, centralised_lock, release, [Client])
+    end,
     {ok, State}.
