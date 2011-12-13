@@ -13,7 +13,7 @@ def run_command(x):
     os.system("make results")
     os.system("mv tests/current/summary.png results/summary_"+str(x)+".png")
 
-if __main__ == '__name__':
+if "__main__" == __name__:
     print 'Running basho_bench...\n'
     if sys.argv[1] == '1':
         run_command(1)
