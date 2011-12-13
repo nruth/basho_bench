@@ -12,6 +12,7 @@ def run_command(x):
     os.system("./basho_bench examples/gaoler.config")
     os.system("make results")
     os.system("mv tests/current/summary.png results/summary_"+str(x)+".png")
+    os.system("../restart.sh")
 
 if "__main__" == __name__:
     print 'Running basho_bench...\n'
