@@ -10,7 +10,7 @@ def run_command(x):
     os.system("cp examples/default_gaoler.config examples/gaoler.config")
     os.system("echo \"{concurrent, " + str(x) + "}.\" >> examples/gaoler.config")
     os.system("./basho_bench examples/gaoler.config")
-    os.system("make results")
+    os.system("./priv/summary.r -i tests/current")
     os.system("mv tests/current/summary.png results/summary_"+str(x)+".png")
     os.system("../restart.sh")
 
