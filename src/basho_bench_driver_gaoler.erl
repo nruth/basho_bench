@@ -3,8 +3,10 @@
          run/4]).
 -include("basho_bench.hrl").
 
+-define (REMOTE, 'gaoler@lakka-1.it.kth.se').
+
 new(Id) ->
-    case net_adm:ping('gaoler@lakka-1.it.kth.se') of
+    case net_adm:ping(?REMOTE) of
         pong ->
             io:format("Connected: ~p~n", [Id]);
         Error ->
@@ -13,11 +15,10 @@ new(Id) ->
     {ok, undefined}.
 
 run(request, _KeyGen, _ValueGen, State) ->    
-    MasterHost = 'gaoler@lakka-1.it.kth.se',
     Client = self(),
-    ok = rpc:call(MasterHost, centralised_lock, acquire, [Client]),
+    ok = rpc:call(?REMOTE, centralised_lock, acquire, [Client]),
     receive
         lock ->
-            ok = rpc:call(MasterHost, centralised_lock, release, [Client])
+            ok = rpc:call(?REMOTE, centralised_lock, release, [Client])
     end,
     {ok, State}.
