@@ -9,16 +9,17 @@ new(Id) ->
     case net_adm:ping(?REMOTE) of
         pong ->
             io:format("Connected: ~p~n", [Id]);
-        Error ->
+        _Error ->
             io:format("error connecting: ~p ~n", [erlang:get_cookie()])
     end,
     {ok, undefined}.
 
-run(request, _KeyGen, _ValueGen, State) ->    
+% grab the lock, noop, then release it
+run(acquire_release, _KeyGen, _ValueGen, State) ->    
     Client = self(),
-    ok = rpc:call(?REMOTE, centralised_lock, acquire, [Client]),
+    ok = rpc:call(?REMOTE, lock, acquire, [Client]),
     receive
         lock ->
-            ok = rpc:call(?REMOTE, centralised_lock, release, [Client])
+            ok = rpc:call(?REMOTE, lock, release, [Client])
     end,
     {ok, State}.
