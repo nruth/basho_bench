@@ -7,7 +7,7 @@
 remote() ->
     % remote address needed as atom() for net_adm:ping
     StringRemote = os:getenv("GAOLER_REMOTE"),
-    AtomRemote = list_to_atom().
+    list_to_atom(StringRemote).
 
 new(Id) ->
     case net_adm:ping(remote()) of
