@@ -1,5 +1,5 @@
 %% Run with e.g. `GAOLER_REMOTE="vm_node@hostname" ./basho_bench examples/gaoler.config`
--module(basho_bench_driver_gaoler).
+-module(basho_bench_driver_gaoler_centralised_lock).
 -export([new/1,
          run/4]).
 -include("basho_bench.hrl").
@@ -22,16 +22,9 @@ new(Id) ->
 run(acquire_release, _KeyGen, _ValueGen, State) ->
     Remote = remote(),
     Client = self(),
-    acquire_lock(Remote),
-    await_lock(),
-    release_lock(Remote),
+    ok = rpc:call(Remote, lock, acquire, [Client]),
+    receive
+        lock ->
+            ok = rpc:call(Remote, lock, release, [Client])
+    end,
     {ok, State}.
-
-acquire_lock(Remote) ->
-    ok = rpc:call(Remote, replica, request, [acquire,Client]).
-
-await_lock() ->
-    receive lock -> lock end.
-
-release_lock(Remote) ->
-    ok = rpc:call(Remote, lock, release, [Client]).
