@@ -25,11 +25,11 @@ run(acquire_release, _KeyGen, _ValueGen, State) ->
     release_lock(),
     {ok, State}.
 
-acquire_lock(Remote) ->
+acquire_lock() ->
     ok = rpc:call(remote(), replica, request, [acquire,self()]).
 
 await_lock() ->
     receive lock -> lock end.
 
-release_lock(Remote) ->
+release_lock() ->
     ok = rpc:call(remote(), lock, release, [self()]).

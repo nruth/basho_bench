@@ -11,7 +11,8 @@
              basho_bench_sup,
              basho_bench_worker,
              basho_bench_valgen,
-	           basho_bench_driver_gaoler
+	           basho_bench_driver_gaoler,
+	           basho_bench_driver_gaoler_centralised_lock
              ]},
   {registered, [ basho_bench_sup ]},
   {applications, [kernel,
