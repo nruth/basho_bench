@@ -20,18 +20,16 @@ new(Id) ->
 
 % grab the lock, noop, then release it
 run(acquire_release, _KeyGen, _ValueGen, State) ->
-    Remote = remote(),
-    Client = self(),
-    acquire_lock(Remote),
+    acquire_lock(),
     await_lock(),
-    release_lock(Remote),
+    release_lock(),
     {ok, State}.
 
 acquire_lock(Remote) ->
-    ok = rpc:call(Remote, replica, request, [acquire,Client]).
+    ok = rpc:call(remote(), replica, request, [acquire,self()]).
 
 await_lock() ->
     receive lock -> lock end.
 
 release_lock(Remote) ->
-    ok = rpc:call(Remote, lock, release, [Client]).
+    ok = rpc:call(remote(), lock, release, [self()]).
